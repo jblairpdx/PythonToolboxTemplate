@@ -9,6 +9,21 @@ import arcpy
 
 LOG = logging.getLogger(__name__)
 
+PARAMETER_ATTRIBUTES = {
+    'parameter_example': {
+        'name': 'parameter_example',
+        'displayName': "Example Parameter",
+        'direction': 'Input',  # Input or Output.
+        'datatype': 'GPBoolean',  # Ref: http://desktop.arcgis.com/en/arcmap/latest/analyze/creating-tools/defining-parameter-data-types-in-a-python-toolbox.htm
+        'parameterType': 'Required',  # Required, Optional, or Derived.
+        'enabled': True,
+        'category': None,  # Optional.
+        'multiValue': False,
+        'value': False,  # Initial value on run.
+        'symbology': None  # Path to layer file for drawing output. Optional.
+        },
+    }
+
 
 class Toolbox(object):  # pylint: disable=too-few-public-methods
     """Define the toolbox.
@@ -48,7 +63,8 @@ class ToolExample(object):
         # Create the parameters in a separate place (allows reusability),
         # then add them here. Recommended: use parameter_from_attributes
         # to allow initial definition to be a dictionary/attribute map.
-        return []
+        return [parameter_from_attributes(PARAMETER_ATTRIBUTES[name])
+                for name in ['parameter_example']]
 
     def isLicensed(self):  #pylint: disable=invalid-name
         """Set whether tool is licensed to execute."""
