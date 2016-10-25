@@ -78,7 +78,7 @@ class ToolExample(object):
         This method is called whenever a parameter has been changed.
         """
         # Follow the below format for checking for changes. Remove if unused.
-        parameter_map = parameter_value_map(parameters)
+        parameter_map = parameter_map = {parameter.name: parameter for parameter in parameters}
         if all([parameter_map['a_parameter'].altered,
                 not parameter_map['a_parameter'].hasBeenValidated]):
             # Do something.
