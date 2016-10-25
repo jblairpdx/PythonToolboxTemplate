@@ -25,7 +25,7 @@ PARAMETER_ATTRIBUTES = {
     }
 
 
-class Toolbox(object):  # pylint: disable=too-few-public-methods
+class Toolbox(object):
     """Define the toolbox.
 
     Toolbox class is required for constructing and ArcGIS Python toolbox.
@@ -44,7 +44,6 @@ class Toolbox(object):  # pylint: disable=too-few-public-methods
             ]
 
 
-#pylint: disable=no-self-use
 class ToolExample(object):
     """Example of an individual tool in an ArcGIS Python toolbox."""
 
@@ -56,9 +55,9 @@ class ToolExample(object):
         # Sets longer description of the tool, shown in the side panel.
         self.description = "##TODO: Description."
         # Sets whether the tool controls ArcGIS while running or not.
-        self.canRunInBackground = False  # pylint: disable=invalid-name
+        self.canRunInBackground = False
 
-    def getParameterInfo(self):  #pylint: disable=invalid-name
+    def getParameterInfo(self):
         """Load parameters into toolbox."""
         # Create the parameters in a separate place (allows reusability),
         # then add them here. Recommended: use parameter_from_attributes
@@ -66,12 +65,12 @@ class ToolExample(object):
         return [parameter_from_attributes(PARAMETER_ATTRIBUTES[name])
                 for name in ['parameter_example']]
 
-    def isLicensed(self):  #pylint: disable=invalid-name
+    def isLicensed(self):
         """Set whether tool is licensed to execute."""
         # If tool needs extra licensing, checking here will prevent execution.
         return True
 
-    def updateParameters(self, parameters):  #pylint: disable=invalid-name
+    def updateParameters(self, parameters):
         """Modify parameters before internal validation is performed.
 
         This method is called whenever a parameter has been changed.
@@ -84,7 +83,7 @@ class ToolExample(object):
             pass
         return
 
-    def updateMessages(self, parameters):  #pylint: disable=invalid-name
+    def updateMessages(self, parameters):
         """Modify messages created by internal validation for each parameter.
 
         This method is called after internal validation.
@@ -98,7 +97,6 @@ class ToolExample(object):
         # Do the steps of the tool.
         messages.addMessage("Can do messages, too.")
         return
-#pylint: enable=no-self-use
 
 
 # Functions & generators.
