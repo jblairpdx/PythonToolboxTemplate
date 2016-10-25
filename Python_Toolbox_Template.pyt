@@ -113,10 +113,11 @@ def parameter_from_attributes(attribute_map):
     """
     parameter = arcpy.Parameter()
     for attribute_name, attribute_value in attribute_map.items():
-        setattr(parameter, attribute_name, attribute_value)
-    # Filter list doesn't stick using setattr.
-    if 'filter.list' in attribute_map:
-        parameter.filter.list = attribute_map['filter.list']
+        # Filter list doesn't stick using setattr.
+        if attribute_name == 'filter.list':
+            parameter.filter.list = attribute_value
+        else:
+            setattr(parameter, attribute_name, attribute_value)
     return parameter
 
 
