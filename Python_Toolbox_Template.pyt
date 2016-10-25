@@ -9,20 +9,19 @@ import arcpy
 
 LOG = logging.getLogger(__name__)
 
-PARAMETER_ATTRIBUTES = {
-    'parameter_example': {
-        'name': 'parameter_example',
-        'displayName': "Example Parameter",
-        'direction': 'Input',  # Input or Output.
-        'datatype': 'GPBoolean',  # Ref: http://desktop.arcgis.com/en/arcmap/latest/analyze/creating-tools/defining-parameter-data-types-in-a-python-toolbox.htm
-        'parameterType': 'Required',  # Required, Optional, or Derived.
-        'enabled': True,
-        'category': None,  # Optional.
-        'multiValue': False,
-        'value': False,  # Initial value on run.
-        'symbology': None  # Path to layer file for drawing output. Optional.
-        },
-    }
+PARAMETER_ATTRIBUTES = (
+    {'name': 'parameter_example',
+     'displayName': "Example Parameter",
+     'direction': 'Input',  # Input or Output.
+     'datatype': 'GPBoolean',  # Ref: http://desktop.arcgis.com/en/arcmap/latest/analyze/creating-tools/defining-parameter-data-types-in-a-python-toolbox.htm
+     'parameterType': 'Required',  # Required, Optional, or Derived.
+     'enabled': True,
+     'category': None,  # Optional.
+     'multiValue': False,
+     'value': False,  # Initial value on run.
+     'symbology': None,  # Path to layer file for drawing output. Optional.
+     'meta_tags' = ['tool_example']},  # Tag collection for referencing related objects in-code.
+    )
 
 
 class Toolbox(object):
@@ -56,14 +55,17 @@ class ToolExample(object):
         self.description = "##TODO: Description."
         # Sets whether the tool controls ArcGIS while running or not.
         self.canRunInBackground = False
+        # Optional tag, useful for referencing related objects in-code.
+        self.tag = 'tool_example'
 
     def getParameterInfo(self):
         """Load parameters into toolbox."""
         # Create the parameters in a separate place (allows reusability),
         # then add them here. Recommended: use parameter_from_attributes
         # to allow initial definition to be a dictionary/attribute map.
-        return [parameter_from_attributes(PARAMETER_ATTRIBUTES[name])
-                for name in ['parameter_example']]
+        return [parameter_from_attributes(attributes)
+                for attributes in PARAMETER_ATTRIBUTES
+                if self.tag in attributes['meta_tags']]
 
     def isLicensed(self):
         """Set whether tool is licensed to execute."""
