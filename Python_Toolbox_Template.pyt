@@ -137,7 +137,8 @@ def parameter_value(parameter):
 
 def parameter_value_map(parameters):
     """Create value map from ArcPy parameter objects."""
-    return {parameter_value(parameter) for parameter in parameters}
+    return {parameter.name: parameter_value(parameter)
+            for parameter in parameters}
 
 
 def unique_ids(data_type=uuid.UUID, string_length=4):
