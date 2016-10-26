@@ -76,8 +76,7 @@ class ToolExample(object):
         """
         # Follow the below format for checking for changes. Remove if unused.
         parameter_map = parameter_map = {parameter.name: parameter for parameter in parameters}
-        if all([parameter_map['a_parameter'].altered,
-                not parameter_map['a_parameter'].hasBeenValidated]):
+        if parameter_changed(parameter_map['a_parameter']):
             # Do something.
             pass
         return
@@ -99,6 +98,11 @@ class ToolExample(object):
 
 
 # Functions & generators.
+
+def parameter_changed(parameter):
+    """Return True if parameter is in a pre-validation changed state."""
+    return all([parameter.altered, not parameter.hasBeenValidated])
+
 
 def parameter_from_attributes(attribute_map):
     """Create ArcPy parameter object using an attribute mapping.
