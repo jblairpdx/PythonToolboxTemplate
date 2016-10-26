@@ -55,8 +55,6 @@ class ToolExample(object):
         self.description = "##TODO: Description."
         # Sets whether the tool controls ArcGIS while running or not.
         self.canRunInBackground = False
-        # Optional tag, useful for referencing related objects in-code.
-        self.tag = 'tool_example'
 
     def getParameterInfo(self):
         """Load parameters into toolbox."""
@@ -64,8 +62,7 @@ class ToolExample(object):
         # then add them here. Recommended: use parameter_from_attributes
         # to allow initial definition to be a dictionary/attribute map.
         return [parameter_from_attributes(attributes)
-                for attributes in PARAMETER_ATTRIBUTES
-                if self.tag in attributes['meta_tags']]
+                for attributes in PARAMETER_ATTRIBUTES]
 
     def isLicensed(self):
         """Set whether tool is licensed to execute."""
