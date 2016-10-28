@@ -75,7 +75,7 @@ class ToolExample(object):
         This method is called whenever a parameter has been changed.
         """
         # Follow the below format for checking for changes. Remove if unused.
-        parameter_map = parameter_map = {parameter.name: parameter for parameter in parameters}
+        parameter_map = {parameter.name: parameter for parameter in parameters}
         if parameter_changed(parameter_map['a_parameter']):
             # Do something.
             pass
