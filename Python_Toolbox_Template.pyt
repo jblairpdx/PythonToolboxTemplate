@@ -9,20 +9,6 @@ import arcpy
 
 LOG = logging.getLogger(__name__)
 
-PARAMETER_ATTRIBUTES = (
-    {'name': 'parameter_example',
-     'displayName': "Example Parameter",
-     'direction': 'Input',  # Input or Output.
-     'datatype': 'GPBoolean',  # Ref: http://desktop.arcgis.com/en/arcmap/latest/analyze/creating-tools/defining-parameter-data-types-in-a-python-toolbox.htm
-     'parameterType': 'Required',  # Required, Optional, or Derived.
-     'enabled': True,
-     'category': None,  # Optional.
-     'multiValue': False,
-     'value': False,  # Initial value on run.
-     'symbology': None,  # Path to layer file for drawing output. Optional.
-     'meta_tags' = ['tool_example']},  # Tag collection for referencing related objects in-code.
-    )
-
 
 class Toolbox(object):
     """Define the toolbox.
@@ -55,6 +41,20 @@ class ToolExample(object):
         self.description = "##TODO: Description."
         # Sets whether the tool controls ArcGIS while running or not.
         self.canRunInBackground = False
+        # Assign parameter attributes here.
+        self.parameter_attributes = (
+            {'name': 'parameter_example',
+             'displayName': "Example Parameter",
+             'direction': 'Input',  # Input or Output.
+             'datatype': 'GPBoolean',  # Ref: http://desktop.arcgis.com/en/arcmap/latest/analyze/creating-tools/defining-parameter-data-types-in-a-python-toolbox.htm
+             'parameterType': 'Required',  # Required, Optional, or Derived.
+             'enabled': True,
+             'category': None,  # Optional.
+             'multiValue': False,
+             'value': False,  # Initial value on run.
+             'symbology': None,  # Path to layer file for drawing output. Optional.
+             'meta_tags' = ['tool_example']},  # Tag collection for referencing related objects in-code.
+            )
 
     def getParameterInfo(self):
         """Load parameters into toolbox."""
