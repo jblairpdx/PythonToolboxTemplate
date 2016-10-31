@@ -99,6 +99,164 @@ class ToolExample(object):
 
 # Functions & generators.
 
+def attributes_as_dicts(dataset_path, field_names=None, **kwargs):
+    """Generator for dictionaries of feature attributes.
+
+    Args:
+        dataset_path (str): Path of dataset.
+        field_names (iter): Iterable of field names.
+    Kwargs:
+        dataset_where_sql (str): SQL where-clause for dataset subselection.
+        spatial_reference_id (int): EPSG code indicating the spatial reference
+            output geometry will be in.
+    Yields:
+        dict.
+    """
+    for kwarg_default in [('dataset_where_sql', None),
+                          ('spatial_reference_id', None)]:
+        kwargs.setdefault(*kwarg_default)
+    with arcpy.da.SearchCursor(
+        in_table=dataset_path, field_names=field_names if field_names else '*',
+        where_clause=kwargs['dataset_where_sql'],
+        spatial_reference=spatial_reference_as_arc(
+            kwargs['spatial_reference_id']
+            )
+        ) as cursor:
+        for feature in cursor:
+            yield dict(zip(cursor.fields, feature))
+
+
+def attributes_as_iters(dataset_path, field_names=None, **kwargs):
+    """Generator for iterables of feature attributes.
+
+    Args:
+        dataset_path (str): Path of dataset.
+        field_names (iter): Iterable of field names.
+    Kwargs:
+        iter_type (object): Python iterable type to yield.
+        dataset_where_sql (str): SQL where-clause for dataset subselection.
+        spatial_reference_id (int): EPSG code indicating the spatial reference
+            output geometry will be in.
+    Yields:
+        iter.
+    """
+    for kwarg_default in [('dataset_where_sql', None), ('iter_type', tuple),
+                          ('spatial_reference_id', None)]:
+        kwargs.setdefault(*kwarg_default)
+    with arcpy.da.SearchCursor(
+        in_table=dataset_path, field_names=field_names if field_names else '*',
+        where_clause=kwargs['dataset_where_sql'],
+        spatial_reference=spatial_reference_as_arc(
+            kwargs['spatial_reference_id']
+            )
+        ) as cursor:
+        for feature in cursor:
+            yield kwargs['iter_type'](feature)
+
+
+def dataset_metadata(dataset_path):
+    """Return dictionary of dataset metadata.
+
+    Args:
+        dataset_path (str): Path of dataset.
+    Returns:
+        dict.
+    """
+    describe_object = arcpy.Describe(dataset_path)
+    meta = {
+        'name': getattr(describe_object, 'name'),
+        'path': getattr(describe_object, 'catalogPath'),
+        'data_type': getattr(describe_object, 'dataType'),
+        'workspace_path': getattr(describe_object, 'path'),
+        # Do not use getattr! Tables can not have OIDs.
+        'is_table': hasattr(describe_object, 'hasOID'),
+        'is_versioned': getattr(describe_object, 'isVersioned', False),
+        'oid_field_name': getattr(describe_object, 'OIDFieldName', None),
+        'is_spatial': hasattr(describe_object, 'shapeType'),
+        'geometry_type': getattr(describe_object, 'shapeType', None),
+        'geometry_field_name': getattr(describe_object, 'shapeFieldName', None),
+        'field_names': [], 'fields': [],
+        'user_field_names': [], 'user_fields': [],
+        }
+    for field in getattr(describe_object, 'fields', ()):
+        meta['field_names'].append(field.name)
+        meta['fields'].append(field_as_metadata(field))
+        if all([field.name != meta['oid_field_name'],
+                '{}.'.format(meta['geometry_field_name']) not in field.name]):
+            meta['user_field_names'].append(field.name)
+            meta['user_fields'].append(field_as_metadata(field))
+    if hasattr(describe_object, 'spatialReference'):
+        meta['arc_spatial_reference'] = getattr(describe_object,
+                                                'spatialReference')
+        meta['spatial_reference_id'] = getattr(meta['arc_spatial_reference'],
+                                               'factoryCode')
+    else:
+        meta['arc_spatial_reference'] = None
+        meta['spatial_reference_id'] = None
+    return meta
+
+
+def field_as_metadata(field_object):
+    """Return dictionary of metadata from an ArcPy field object."""
+    meta = {
+        'name': getattr(field_object, 'name'),
+        'alias_name': getattr(field_object, 'aliasName'),
+        'base_name': getattr(field_object, 'baseName'),
+        'type': getattr(field_object, 'type').lower(),
+        'length': getattr(field_object, 'length'),
+        'precision': getattr(field_object, 'precision'),
+        'scale': getattr(field_object, 'scale'),
+        }
+    return meta
+
+
+def insert_features_from_dicts(dataset_path, insert_features, field_names):
+    """Insert features from a collection of dictionaries.
+
+    Args:
+        dataset_path (str): Path of dataset.
+        insert_features (iter): Iterable containing dictionaries representing
+            features.
+        field_names (iter): Iterable of field names to insert.
+    Returns:
+        str.
+    """
+    LOG.info("Start: Insert features from dictionaries into %s.", dataset_path)
+    if inspect.isgeneratorfunction(insert_features):
+        insert_features = insert_features()
+    # Regenerate as iters.
+    insert_features = (
+        [feat[name] if name in feat else None for name in field_names]
+        for feat in insert_features
+        )
+    with arcpy.da.InsertCursor(dataset_path, field_names) as cursor:
+        for row in insert_features:
+            cursor.insertRow(row)
+    LOG.info("End: Insert.")
+    return dataset_path
+
+
+def insert_features_from_iters(dataset_path, insert_features, field_names):
+    """Insert features from a collection of iterables.
+
+    Args:
+        dataset_path (str): Path of dataset.
+        insert_features (iter): Iterable containing iterables representing
+            features.
+        field_names (iter): Iterable of field names to insert.
+    Returns:
+        str.
+    """
+    LOG.info("Start: Insert features from iterables into %s.", dataset_path)
+    if inspect.isgeneratorfunction(insert_features):
+        insert_features = insert_features()
+    with arcpy.da.InsertCursor(dataset_path, field_names) as cursor:
+        for row in insert_features:
+            cursor.insertRow(row)
+    LOG.info("End: Insert.")
+    return dataset_path
+
+
 def parameter_changed(parameter):
     """Return True if parameter is in a pre-validation changed state."""
     return all([parameter.altered, not parameter.hasBeenValidated])
@@ -147,6 +305,28 @@ def parameter_value_map(parameters):
     """Create value map from ArcPy parameter objects."""
     return {parameter.name: parameter_value(parameter)
             for parameter in parameters}
+
+
+def spatial_reference_as_arc(spatial_reference):
+    """Return ArcPy spatial reference object from a Python reference.
+
+    Args:
+        spatial_reference (int): Spatial reference ID.
+                          (str): Path of reference dataset/file.
+                          (arcpy.Geometry): Reference geometry object.
+    Returns:
+        arcpy.SpatialReference.
+    """
+    if spatial_reference is None:
+        arc_object = None
+    elif isinstance(spatial_reference, int):
+        arc_object = arcpy.SpatialReference(spatial_reference)
+    elif isinstance(spatial_reference, arcpy.Geometry):
+        arc_object = getattr(spatial_reference, 'spatialReference')
+    else:
+        arc_object = getattr(arcpy.Describe(spatial_reference),
+                             'spatialReference')
+    return arc_object
 
 
 def unique_ids(data_type=uuid.UUID, string_length=4):
