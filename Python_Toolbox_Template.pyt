@@ -90,14 +90,60 @@ class ToolExample(object):
 
     def execute(self, parameters, messages):
         """Procedural code of the tool."""
+        # Sets up logger-like object that logs to both ArPy and the file's logger.
+        log = ArcLogger(loggers=[LOG])
         # value_map contains dictionary with parameter name/value key/values.
         value_map = parameter_value_map(parameters)
         # Do the steps of the tool.
-        messages.addMessage("Can do messages, too.")
         return
 
 
 # Functions & generators.
+
+class ArcLogger(object):
+    """Faux-logger for logging to ArcPy/ArcGIS messaging system."""
+
+    arc_function = {
+        logging.NOTSET: (lambda msg: None),
+        # No debug level in Arc messaging system 👎.
+        logging.DEBUG: (lambda msg: None),
+        logging.INFO: arcpy.AddMessage,
+        logging.WARNING: arcpy.AddWarning,
+        logging.ERROR: arcpy.AddError,
+        # No debug level in Arc messaging system 👎. Map to error level.
+        logging.CRITICAL: arcpy.AddError,
+        }
+
+    def __init__(self, loggers=None):
+        """Instance initialization."""
+        self.loggers = loggers if loggers else []
+
+    def debug(self, msg):
+        """Log message with level DEBUG."""
+        self.log(logging.DEBUG, msg)
+
+    def info(self, msg):
+        """Log message with level INFO."""
+        self.log(logging.INFO, msg)
+
+    def warning(self, msg):
+        """Log message with level WARNING."""
+        self.log(logging.WARNING, msg)
+
+    def error(self, msg):
+        """Log message with level ERROR."""
+        self.log(logging.ERROR, msg)
+
+    def critical(self, msg):
+        """Log message with level CRITICAL."""
+        self.log(logging.CRITICAL, msg)
+
+    def log(self, lvl, msg):
+        """Log message with level lvl."""
+        self.arc_function[lvl](msg)
+        for logger in self.loggers:
+            logger.log(lvl, msg)
+
 
 def attributes_as_dicts(dataset_path, field_names=None, **kwargs):
     """Generator for dictionaries of feature attributes.
