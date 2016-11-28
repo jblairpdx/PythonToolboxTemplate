@@ -106,7 +106,6 @@ class ToolExample(object):
         # Same code can be used for updateMessages.
         # Remove code if not needed.
         parameter_map = {parameter.name: parameter for parameter in parameters}
-        parameter_map = {parameter.name: parameter for parameter in parameters}
         if parameter_changed(parameter_map['a_parameter']):
             # Do something.
             pass
