@@ -15,6 +15,7 @@ PARAMETER_ATTRIBUTES = {
     'example_parameter': {
         # Match parameter name to dictionary key.
         'name': 'example_parameter',
+        'displayName': "Example Parameter",
         # Direction: 'Input' or 'Output'.
         'direction': 'Input',
         # datatype: http://desktop.arcgis.com/en/arcmap/latest/analyze/creating-tools/defining-parameter-data-types-in-a-python-toolbox.htm
