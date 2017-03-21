@@ -68,7 +68,7 @@ class ToolExample(object):
             ##TODO: Description.
             """
         # Sets whether the tool controls ArcGIS  focus while running.
-        self.canRunInBackground = False
+        self.canRunInBackground = False  # pylint: disable=invalid-name
         # Recommended: collect parameter attributes here, to have a default
         # reference in instance.
         self.parameter_attributes = (
