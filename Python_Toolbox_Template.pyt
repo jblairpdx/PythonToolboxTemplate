@@ -75,7 +75,7 @@ class ToolExample(object):
             PARAMETER_ATTRIBUTES['example_parameter'],
             )
 
-    def getParameterInfo(self):  # pylint: disable=no-self-use
+    def getParameterInfo(self):  # pylint: disable=invalid-name,no-self-use
         """Load parameters into toolbox."""
         # Create the parameters in a separate place (allows reusability),
         # then add them here. Recommended: use parameter_from_attributes
@@ -85,20 +85,20 @@ class ToolExample(object):
                       for attributes in self.parameter_attributes]
         return parameters
 
-    def isLicensed(self):  # pylint: disable=no-self-use
+    def isLicensed(self):  # pylint: disable=invalid-name,no-self-use
         """Set whether tool is licensed to execute."""
         # If tool needs extra licensing, checking here will prevent execution.
         return True
 
-    def updateMessages(self, parameters):  # pylint: disable=no-self-use
+    def updateMessages(self, parameters):  # pylint: disable=invalid-name,no-self-use
         """Modify messages created by internal validation for each parameter.
 
         This method is called after internal validation.
         """
         # No update requirements at this time.
-        return
+        pass
 
-    def updateParameters(self, parameters):  # pylint: disable=no-self-use
+    def updateParameters(self, parameters):  # pylint: disable=invalid-name,no-self-use
         """Modify parameters before internal validation is performed.
 
         This method is called whenever a parameter has been changed.
@@ -110,7 +110,6 @@ class ToolExample(object):
         if parameter_changed(parameter_map['a_parameter']):
             # Do something.
             pass
-        return
 
     def execute(self, parameters, messages):  # pylint: disable=no-self-use
         """Procedural code of the tool."""
@@ -119,7 +118,6 @@ class ToolExample(object):
         # value_map contains dictionary with parameter name/value key/values.
         value_map = parameter_value_map(parameters)
         log.info("TODO: Steps of the tool here.")
-        return
 
 
 # Tool-specific helpers.
@@ -177,7 +175,7 @@ class ArcLogger(object):
 
 def parameter_changed(parameter):
     """Return True if parameter is in a pre-validation changed state."""
-    return all([parameter.altered, not parameter.hasBeenValidated])
+    return all((parameter.altered, not parameter.hasBeenValidated))
 
 
 def parameter_from_attributes(attribute_map):
