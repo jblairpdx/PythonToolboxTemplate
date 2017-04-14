@@ -11,29 +11,6 @@ import arcpy
 
 LOG = logging.getLogger(__name__)
 
-PARAMETER_ATTRIBUTES = {
-    'example_parameter': {
-        # Match parameter name to dictionary key.
-        'name': 'example_parameter',
-        'displayName': "Example Parameter",
-        # Direction: 'Input' or 'Output'.
-        'direction': 'Input',
-        # datatype: http://desktop.arcgis.com/en/arcmap/latest/analyze/creating-tools/defining-parameter-data-types-in-a-python-toolbox.htm
-        'datatype': 'GPBoolean',
-        # parameterType: 'Required', 'Optional', or 'Derived'.
-        'parameterType': 'Required',
-        # emabled: True or False.
-        'enabled': True,
-        # category (optional). Note having one will collapse category on open.
-        'category': None,
-        'multiValue': False,
-        # Value type must be Python type match for datatype.
-        'value': True,
-        # symbology (optional): Path to layer file for drawing output.
-        'symbology': None,
-        },
-    }
-
 
 class Toolbox(object):  # pylint: disable=too-few-public-methods
     """Define the toolbox.
@@ -69,11 +46,6 @@ class ToolExample(object):
             """
         # Sets whether the tool controls ArcGIS  focus while running.
         self.canRunInBackground = False  # pylint: disable=invalid-name
-        # Recommended: collect parameter attributes here, to have a default
-        # reference in instance.
-        self.parameter_attributes = (
-            PARAMETER_ATTRIBUTES['example_parameter'],
-            )
 
     def getParameterInfo(self):  # pylint: disable=invalid-name,no-self-use
         """Load parameters into toolbox."""
@@ -81,8 +53,27 @@ class ToolExample(object):
         # then add them here. Recommended: use parameter_from_attributes
         # to allow initial definition to be a dictionary/attribute map.
         # Return value must be list (not other iterable).
-        parameters = [parameter_from_attributes(attributes)
-                      for attributes in self.parameter_attributes]
+        parameters = [
+            parameter_from_attributes(
+                {'name': 'example_parameter',
+                 'displayName': "Example Parameter",
+                 # Direction: 'Input' or 'Output'.
+                 'direction': 'Input',
+                 # datatype: http://desktop.arcgis.com/en/arcmap/latest/analyze/creating-tools/defining-parameter-data-types-in-a-python-toolbox.htm
+                 'datatype': 'GPBoolean',
+                 # parameterType: 'Required', 'Optional', or 'Derived'.
+                 'parameterType': 'Required',
+                 # emabled: True or False.
+                 'enabled': True,
+                 # category (optional). Note having one will collapse category on open.
+                 'category': None,
+                 'multiValue': False,
+                 # Value type must be Python type match for datatype.
+                 'value': True,
+                 # symbology (optional): Path to layer file for drawing output.
+                 'symbology': None}
+                ),
+            ]
         return parameters
 
     def isLicensed(self):  # pylint: disable=invalid-name,no-self-use
