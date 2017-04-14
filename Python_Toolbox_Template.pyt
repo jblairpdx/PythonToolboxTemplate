@@ -1,4 +1,3 @@
-# -*- coding=utf-8 -*-
 """##TODO: Docstring."""
 ##TODO: Standard lib imports.
 import logging
