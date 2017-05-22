@@ -14,7 +14,7 @@ LOG = logging.getLogger(__name__)
 class Toolbox(object):  # pylint: disable=too-few-public-methods
     """Define the toolbox.
 
-    Toolbox class is required for constructing and ArcGIS Python toolbox.
+    Toolbox class is required for constructing an ArcGIS Python toolbox.
     The name of toolbox is the basename of this file.
     """
 
