@@ -64,7 +64,7 @@ class ToolExample(object):
                  'enabled': True,
                  'category': None,
                  'multiValue': False,
-                 'value': True,
+                 'value': 'EXAMPLE VALUE',
                  'symbology': None},
                 ),
             ]
