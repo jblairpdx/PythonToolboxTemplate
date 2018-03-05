@@ -308,6 +308,14 @@ def parameter_value(parameter):
 
 
 def parameter_value_map(parameters):
-    """Create value map from ArcPy parameter objects."""
+    """Create value map from parameters.
+
+    Args:
+        parameters (list of arcpy.Parameter): Tool parameters.
+
+    Returns:
+        dict: {parameter-name: parameter-value}
+
+    """
     return {parameter.name: parameter_value(parameter)
             for parameter in parameters}
