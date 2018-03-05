@@ -46,30 +46,28 @@ class ToolExample(object):
         """bool: Flag for whether tool controls ArcGIS focus while running."""
 
     def getParameterInfo(self):  # pylint: disable=invalid-name,no-self-use
-        """Load parameters into toolbox."""
-        # Create the parameters in a separate place (allows reusability),
-        # then add them here. Recommended: use parameter_from_attributes
-        # to allow initial definition to be a dictionary/attribute map.
-        # Return value must be list (not other iterable).
+        """Load parameters into toolbox.
+
+        Recommended: Use `parameter_create` to allow initial
+        definition to be a dictionary attribute map.
+
+        Returns:
+            list of arcpy.Parameter: Tool parameters.
+
+        """
         parameters = [
-            parameter_from_attributes(
+            parameter_create(
+                ##TODO: Parameter attributes.
                 {'name': 'example_parameter',
                  'displayName': "Example Parameter",
-                 # Direction: 'Input' or 'Output'.
                  'direction': 'Input',
-                 # datatype: http://desktop.arcgis.com/en/arcmap/latest/analyze/creating-tools/defining-parameter-data-types-in-a-python-toolbox.htm
-                 'datatype': 'GPBoolean',
-                 # parameterType: 'Required', 'Optional', or 'Derived'.
+                 'datatype': 'GPVariant',
                  'parameterType': 'Required',
-                 # emabled: True or False.
                  'enabled': True,
-                 # category (optional). Note having one will collapse category on open.
                  'category': None,
                  'multiValue': False,
-                 # Value type must be Python type match for datatype.
                  'value': True,
-                 # symbology (optional): Path to layer file for drawing output.
-                 'symbology': None}
+                 'symbology': None},
                 ),
             ]
         return parameters
