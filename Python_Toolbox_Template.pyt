@@ -35,16 +35,15 @@ class ToolExample(object):
     """Example of an individual tool in an ArcGIS Python toolbox."""
 
     def __init__(self):
-        # Label is how tool is named within toolbox.
+        """Initialize instance."""
         self.label = "##TODO: Label."
-        # Category is name of sub-toolset tool will be in (optional).
+        """str: How tool is named within toolbox."""
         self.category = None
-        # Description is longer text for tool, shown in side panel.
-        self.description = """
-            ##TODO: Description.
-            """
-        # Sets whether the tool controls ArcGIS  focus while running.
+        """str, NoneType: Name of sub-toolset tool will be in (optional)."""
+        self.description = ""  ##TODO: Description.
+        """str: Longer text describing tool, shown in side panel."""
         self.canRunInBackground = False  # pylint: disable=invalid-name
+        """bool: Flag for whether tool controls ArcGIS focus while running."""
 
     def getParameterInfo(self):  # pylint: disable=invalid-name,no-self-use
         """Load parameters into toolbox."""
