@@ -102,13 +102,15 @@ class ToolExample(object):
         """Modify parameters before internal validation is performed.
 
         This method is called whenever a parameter has been changed.
+
+        Args:
+            parameters (list of arcpy.Parameter): Tool parameters.
+
         """
-        # Follow the below format for checking for changes.
-        # Same code can be used for updateMessages.
-        # Remove code if not needed.
-        parameter_map = {parameter.name: parameter for parameter in parameters}
-        if parameter_changed(parameter_map['a_parameter']):
-            # Do something.
+        parameter = {param.name: param for param in parameters}
+        ##TODO: If example parameter changed.
+        if parameter_changed(parameter['example_parameter']):
+            ##TODO: Update messages.
             pass
 
     def execute(self, parameters, messages):  # pylint: disable=no-self-use
