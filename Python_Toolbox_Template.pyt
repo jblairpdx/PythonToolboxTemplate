@@ -189,7 +189,8 @@ def parameter_create(attribute_values):
                 'displayName': displayName,
                 # (str): Direction of the parameter ('Input'/'Output').
                 'direction': direction,
-                # (str) Parameter data type. See: https://desktop.arcgis.com/en/arcmap/latest/analyze/creating-tools/defining-parameter-data-types-in-a-python-toolbox.htm
+                # (str) Parameter data type.
+                # https://desktop.arcgis.com/en/arcmap/latest/analyze/creating-tools/defining-parameter-data-types-in-a-python-toolbox.htm
                 'datatype': datatype,
                 # (str): Parameter type ('Required'/'Optional'/'Derived').
                 'parameterType': parameterType,
