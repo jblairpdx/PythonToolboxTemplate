@@ -163,7 +163,12 @@ class ArcLogger(object):
             logger.log(lvl, msg)
 
 
-def create_parameter(attribute_values):
+def parameter_changed(parameter):
+    """Return True if parameter is in a pre-validation changed state."""
+    return all((parameter.altered, not parameter.hasBeenValidated))
+
+
+def parameter_create(attribute_values):
     """Create ArcPy parameter object using an attribute mapping.
 
     Note that this doesn't check if the attribute exists in the default
@@ -184,11 +189,6 @@ def create_parameter(attribute_values):
     if 'filter.list' in attribute_values:
         parameter.filter.list = attribute_values['filter.list']
     return parameter
-
-
-def parameter_changed(parameter):
-    """Return True if parameter is in a pre-validation changed state."""
-    return all((parameter.altered, not parameter.hasBeenValidated))
 
 
 def parameter_value(parameter):
