@@ -266,20 +266,45 @@ def parameter_create(attribute_values):
 
 
 def parameter_value(parameter):
-    """Return value of parameter."""
-    def handle_value_object(value_object):
-        """Return actual value from value object.
+    """Get current parameter value.
 
-        Some values embedded in 'value object' (.value.value), others aren't.
-        """
-        return getattr(value_object, 'value', value_object)
-    if not parameter.multiValue:
-        result = handle_value_object(parameter.value)
-    # Multivalue parameters place their values in .values (.value. holds a
-    # ValueTable object).
+    If value attribute references a geoprocessing value object, will use this
+    function recursively to get the actual value.
+
+    Args:
+        parameter (arcpy.Parameter): Parameter to check.
+
+    Returns:
+        Current parameter value.
+
+    """
+    if hasattr(parameter, 'values'):
+        if parameter.values is None:
+            value = None
+        elif parameter.datatype == 'Value Table':
+            value = []
+            for row in parameter.values:
+                subval = tuple(
+                    val if type(val).__name__ != 'geoprocessing value object'
+                    else parameter_value(val)
+                    for val in row
+                    )
+                value.append(subval)
+            value = tuple(value)
+        else:
+            value = tuple(
+                val if type(val).__name__ != 'geoprocessing value object'
+                else parameter_value(val)
+                for val in parameter.values
+                )
     else:
-        result = [handle_value_object(value) for value in parameter.values]
-    return result
+        if parameter.value is None:
+            value = None
+        elif type(parameter.value).__name__ == 'geoprocessing value object':
+            value = parameter_value(parameter.value)
+        else:
+            value = parameter.value
+    return value
 
 
 def parameter_value_map(parameters):
