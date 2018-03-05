@@ -167,7 +167,15 @@ class ArcLogger(object):
 
 
 def parameter_changed(parameter):
-    """Return True if parameter is in a pre-validation changed state."""
+    """Check whether parameter is in a pre-validation changed state.
+
+    Args:
+        arcpy.Parameter: Parameter to check.
+
+    Returns:
+        bool: True if changed, False otherwise.
+
+    """
     return all((parameter.altered, not parameter.hasBeenValidated))
 
 
