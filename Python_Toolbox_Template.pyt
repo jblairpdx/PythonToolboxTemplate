@@ -87,9 +87,16 @@ class ToolExample(object):
         """Modify messages created by internal validation for each parameter.
 
         This method is called after internal validation.
+
+        Args:
+            parameters (list of arcpy.Parameter): Tool parameters.
+
         """
-        # No update requirements at this time.
-        pass
+        parameter = {param.name: param for param in parameters}
+        ##TODO: If example parameter changed.
+        if parameter_changed(parameter['example_parameter']):
+            ##TODO: Update messages.
+            pass
 
     def updateParameters(self, parameters):  # pylint: disable=invalid-name,no-self-use
         """Modify parameters before internal validation is performed.
