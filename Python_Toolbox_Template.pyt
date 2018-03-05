@@ -168,7 +168,7 @@ def parameter_changed(parameter):
     return all((parameter.altered, not parameter.hasBeenValidated))
 
 
-def parameter_from_attributes(attribute_map):
+def create_parameter(attribute_values):
     """Create ArcPy parameter object using an attribute mapping.
 
     Note that this doesn't check if the attribute exists in the default
@@ -177,17 +177,17 @@ def parameter_from_attributes(attribute_map):
     (usually this will just attach the new attribute).
     """
     parameter = arcpy.Parameter()
-    for attribute_name, attribute_value in attribute_map.items():
+    for attribute_name, attribute_value in attribute_values.items():
         # Apply filter later.
         if attribute_name.startswith('filter.'):
             continue
         else:
             setattr(parameter, attribute_name, attribute_value)
     # Filter attributes don't stick using setattr.
-    if 'filter.type' in attribute_map:
-        parameter.filter.type = attribute_map['filter.type']
-    if 'filter.list' in attribute_map:
-        parameter.filter.list = attribute_map['filter.list']
+    if 'filter.type' in attribute_values:
+        parameter.filter.type = attribute_values['filter.type']
+    if 'filter.list' in attribute_values:
+        parameter.filter.list = attribute_values['filter.list']
     return parameter
 
 
