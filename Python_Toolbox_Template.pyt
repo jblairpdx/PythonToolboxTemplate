@@ -168,6 +168,10 @@ def parameter_changed(parameter):
     return all((parameter.altered, not parameter.hasBeenValidated))
 
 
+##TODO: Implement/test for 'defaultEnvironmentName' (add to docstring).
+##TODO: Implement/test for 'parameterDependencies' (add to docstring).
+##TODO: Implement/test for 'filters' (add to docstring).
+##TODO: Implement/test for 'values' (add to docstring).
 def parameter_create(attribute_values):
     """Create ArcPy parameter object using an attribute mapping.
 
@@ -175,14 +179,63 @@ def parameter_create(attribute_values):
     parameter instance. This means that you can attempt to set a new
     attribute, but the result will depend on how the class implements setattr
     (usually this will just attach the new attribute).
+
+    Args:
+        attribute_values (dict): Mapping of attribute names to values.
+            {
+                # (str): Internal reference name.
+                'name': name,
+                # (str): Label as shown in tool's dialog.
+                'displayName': displayName,
+                # (str): Direction of the parameter ('Input'/'Output').
+                'direction': direction,
+                # (str) Parameter data type. See: https://desktop.arcgis.com/en/arcmap/latest/analyze/creating-tools/defining-parameter-data-types-in-a-python-toolbox.htm
+                'datatype': datatype,
+                # (str): Parameter type ('Required'/'Optional'/'Derived').
+                'parameterType': parameterType,
+                # (bool): Flag to set parameter as enabled or disabled.
+                'enabled': enabled,
+                # (str, NoneType): Category to include parameter in.
+                # Naming category will hide tool in collapsed category on
+                # open. Set to None for tool to be at top-level.
+                'category': category,
+                # (str, NoneType): Path to layer file used for drawing output.
+                # Set to None to omit symbology.
+                'symbology': symbology,
+                # (bool): Flag to set whether parameter is multi-valued.
+                'multiValue': multiValue,
+                # (object): Data value of the parameter. Object's type must
+                # be Python equivalent of parameter 'datatype'.
+                'value': value,
+                # (list of list): data types & names for value table columns.
+                # Ex:  [['GPFeatureLayer', 'Features'], ['GPLong', 'Ranks']]
+                'columns': columns,
+                # (str): Type of filter.
+                'filter.type': filter_type,
+                # (list): Collection of possible values.
+                'filter.list': filter_list,
+            }
+
+    Returns:
+        arcpy.Parameter: Parameter derived from the attributes.
+
     """
+    default = {'name': unique_name(), 'displayName': None,
+               'direction': 'Input', 'datatype': 'GPVariant',
+               'parameterType': 'Optional', 'enabled': True, 'category': None,
+               'symbology': None, 'multiValue': False, 'value': None}
     parameter = arcpy.Parameter()
-    for attribute_name, attribute_value in attribute_values.items():
+    for attr, value in attribute_values.items():
         # Apply filter later.
-        if attribute_name.startswith('filter.'):
+        if attr.startswith('filter.'):
             continue
         else:
-            setattr(parameter, attribute_name, attribute_value)
+            setattr(parameter, attr, value)
+    # Set defaults for initial attributes not in attribute_values.
+    for attr, value in default.items():
+        if attr in attribute_values:
+            continue
+        setattr(parameter, attr, value)
     # Filter attributes don't stick using setattr.
     if 'filter.type' in attribute_values:
         parameter.filter.type = attribute_values['filter.type']
