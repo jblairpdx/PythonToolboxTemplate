@@ -114,12 +114,20 @@ class ToolExample(object):
             pass
 
     def execute(self, parameters, messages):  # pylint: disable=no-self-use
-        """Procedural code of the tool."""
-        # Set up logger-like object, logs to both ArPy and file's logger.
-        log = ArcLogger(loggers=[LOG])
-        # value_map contains dictionary with parameter name/value key/values.
-        value_map = parameter_value_map(parameters)
-        log.info("TODO: Steps of the tool here.")
+        """Execute tool procedure.
+
+        Args:
+            parameters (list of arcpy.Parameter): Tool parameters.
+            messages (geoprocessing messages object): Tool messages.
+
+        """
+        # Use value to access parameter values by name. Can also add values.
+        value = parameter_value_map(parameters)
+        # Uncomment for-loop to have info about parameters in messages.
+        # for param in parameters:
+        #     messages.AddWarningMessage(param.name + " - " + param.datatype)
+        #     messages.AddWarningMessage(value[param.name])
+        ##TODO: Execution code.
 
 
 # Tool-specific helpers.
