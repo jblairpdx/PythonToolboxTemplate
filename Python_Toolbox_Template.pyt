@@ -73,8 +73,14 @@ class ToolExample(object):
         return parameters
 
     def isLicensed(self):  # pylint: disable=invalid-name,no-self-use
-        """Set whether tool is licensed to execute."""
-        # If tool needs extra licensing, returning False prevents execution.
+        """Set whether tool is licensed to execute.
+
+        If tool needs extra licensing, returning False prevents execution.
+
+        Returns:
+            bool: True if licensed, False otherwise.
+
+        """
         return True
 
     def updateMessages(self, parameters):  # pylint: disable=invalid-name,no-self-use
