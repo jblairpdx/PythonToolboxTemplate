@@ -90,11 +90,10 @@ class ToolExample(object):
             parameters (list of arcpy.Parameter): Tool parameters.
 
         """
-        parameter = {param.name: param for param in parameters}
-        ##TODO: If example parameter changed.
-        if parameter_changed(parameter['example_parameter']):
-            ##TODO: Update messages.
-            pass
+        # parameter = {param.name: param for param in parameters}
+        # if parameter_changed(parameter['example_parameter']):
+        #     do_message_updates()
+        pass
 
     def updateParameters(self, parameters):  # pylint: disable=invalid-name,no-self-use
         """Modify parameters before internal validation is performed.
@@ -105,11 +104,10 @@ class ToolExample(object):
             parameters (list of arcpy.Parameter): Tool parameters.
 
         """
-        parameter = {param.name: param for param in parameters}
-        ##TODO: If example parameter changed.
-        if parameter_changed(parameter['example_parameter']):
-            ##TODO: Update messages.
-            pass
+        # parameter = {param.name: param for param in parameters}
+        # if parameter_changed(parameter['example_parameter']):
+        #     do_parameter_updates
+        pass
 
     def execute(self, parameters, messages):  # pylint: disable=no-self-use
         """Execute tool procedure.
