@@ -1,32 +1,48 @@
-"""##TODO: Docstring."""
+"""##TODO: Docstring.
+
+Here is where you should explain the contents/purpose of the toolbox.
+
+"""
 import logging
 import os
+import random
+import string
+import sys
 import uuid
 
 import arcpy
 
+if sys.version_info.major <= 3:
+    basestring = str
+
 
 LOG = logging.getLogger(__name__)
 
+# _CONFIG_PATH = __file__[:-4] + '.config.json'
+# """str: Path for toolbox configuration file."""
 
-class Toolbox(object):  # pylint: disable=too-few-public-methods
-    """Define the toolbox.
+
+class Toolbox(object):
+    """Defines the toolbox.
 
     Toolbox class is required for constructing an ArcGIS Python toolbox.
     The name of toolbox is the basename of this file.
+
+    Use arcpy.ImportToolbox to attach the toolbox. After attaching,
+    reference the tools like `arcpy.{toolbox-alias}.{tool-class-name}`
+
     """
 
     def __init__(self):
+        """Initialize instance."""
         self.label = "##TODO: Toolbox label."
-        # Alias is toolbox namespace when attached to ArcPy (arcpy.{alias}).
-        # Attach using arcpy.AddToolbox().
+        """str: Label for the toolbox. Only shows up in toolbox properties."""
         self.alias = '##TODO: Toolbox alias.'
-        # List of tool classes associated with this toolbox.
-        # self.tools must be list (not other iterable).
+        """str: toolbox namespace when attached to ArcPy."""
         self.tools = [
-            # Add tools here by their class name to make visible in toolbox.
             ToolExample,
-            ]
+        ]
+        """list: Tool classes associated with this toolbox."""
 
 
 class ToolExample(object):
@@ -38,15 +54,17 @@ class ToolExample(object):
         """str: How tool is named within toolbox."""
         self.category = None
         """str, NoneType: Name of sub-toolset tool will be in (optional)."""
-        self.description = ""  ##TODO: Description.
+        self.description = "##TODO: Description."
         """str: Longer text describing tool, shown in side panel."""
-        self.canRunInBackground = False  # pylint: disable=invalid-name
+        self.canRunInBackground = False
         """bool: Flag for whether tool controls ArcGIS focus while running."""
+        # self.config = load_config(_CONFIG_PATH).get(self.__class__.__name__, dict())
+        # """dict: Tool configuration settings."""
 
-    def getParameterInfo(self):  # pylint: disable=invalid-name,no-self-use
+    def getParameterInfo(self):
         """Load parameters into toolbox.
 
-        Recommended: Use `parameter_create` to allow initial
+        Recommended: Use `create_parameter` to allow initial
         definition to be a dictionary attribute map.
 
         Returns:
@@ -54,23 +72,32 @@ class ToolExample(object):
 
         """
         parameters = [
-            parameter_create(
-                ##TODO: Parameter attributes.
+            create_parameter(
                 {'name': 'example_parameter',
-                 'displayName': "Example Parameter",
-                 'direction': 'Input',
+                 'displayName': "Example Parameter (see create_parameter docstring)",
                  'datatype': 'GPVariant',
-                 'parameterType': 'Required',
-                 'enabled': True,
-                 'category': None,
-                 'multiValue': False,
-                 'value': 'EXAMPLE VALUE',
-                 'symbology': None},
-                ),
-            ]
+                 'value': 'EXAMPLE VALUE',},
+            ),
+            create_parameter(
+                {'name': 'overwrite',
+                 'displayName': 'Overwrite Output',
+                 'datatype': 'GPBoolean',
+                 'category': 'Settings', 'value': False}
+            ),
+            # create_parameter(
+            #     {'name': 'save_config_file_on_run',
+            #      'displayName': 'Save to Configuration File on Run',
+            #      'datatype': 'GPBoolean',
+            #      'category': 'Settings', 'value': False}
+            # ),
+        ]
+        # # Apply config values.
+        # for parameter in parameters:
+        #     if parameter.name not in {'save_config_file'}:
+        #         parameter.value = self.config.get(parameter.name, parameter.value)
         return parameters
 
-    def isLicensed(self):  # pylint: disable=invalid-name,no-self-use
+    def isLicensed(self):
         """Set whether tool is licensed to execute.
 
         If tool needs extra licensing, returning False prevents execution.
@@ -81,7 +108,7 @@ class ToolExample(object):
         """
         return True
 
-    def updateMessages(self, parameters):  # pylint: disable=invalid-name,no-self-use
+    def updateMessages(self, parameters):
         """Modify messages created by internal validation for each parameter.
 
         This method is called after internal validation.
@@ -90,12 +117,12 @@ class ToolExample(object):
             parameters (list of arcpy.Parameter): Tool parameters.
 
         """
-        # parameter = {param.name: param for param in parameters}
-        # if parameter_changed(parameter['example_parameter']):
-        #     do_message_updates()
-        pass
+        parameter = {param.name: param for param in parameters}
+        ##TODO: See if example_parameter's message needs updating.
+        if parameter_changed(parameter['example_parameter']):
+            pass
 
-    def updateParameters(self, parameters):  # pylint: disable=invalid-name,no-self-use
+    def updateParameters(self, parameters):
         """Modify parameters before internal validation is performed.
 
         This method is called whenever a parameter has been changed.
@@ -104,12 +131,14 @@ class ToolExample(object):
             parameters (list of arcpy.Parameter): Tool parameters.
 
         """
-        # parameter = {param.name: param for param in parameters}
-        # if parameter_changed(parameter['example_parameter']):
-        #     do_parameter_updates
-        pass
+        parameter = {param.name: param for param in parameters}
+        if parameter_changed(parameter['overwrite']):
+            arcpy.env.overwriteOutput = parameter['overwrite'].value
+        ##TODO: See if example_parameter's properties need updating.
+        if parameter_changed(parameter['example_parameter']):
+            pass
 
-    def execute(self, parameters, messages):  # pylint: disable=no-self-use
+    def execute(self, parameters, messages):
         """Execute tool procedure.
 
         Args:
@@ -117,43 +146,32 @@ class ToolExample(object):
             messages (geoprocessing messages object): Tool messages.
 
         """
-        # Use value to access parameter values by name. Can also add values.
+        ##TODO: Use value to access parameter values by name (can also add values).
         value = parameter_value_map(parameters)
-        # Uncomment for-loop to have info about parameters in messages.
+        # if value['save_config_file_on_run']:
+        #     self.config = update_config(self.__class__.__name__, parameters,
+        #                                 _CONFIG_PATH)
+        # Uncomment for-loop to have info about parameter values in messages.
         # for param in parameters:
         #     messages.AddWarningMessage(param.name + " - " + param.datatype)
         #     messages.AddWarningMessage(value[param.name])
         ##TODO: Execution code.
 
 
-# Tool-specific helpers.
+# Tool-specific objects.
 
-##TODO: Put objects specific to tool(s) only in this toolbox here.
-
-# Helpers.
-
-##TODO: Put more generic objects here.
-
-# General toolbox functions.
-
-def parameter_changed(parameter):
-    """Check whether parameter is in a pre-validation changed state.
-
-    Args:
-        arcpy.Parameter: Parameter to check.
-
-    Returns:
-        bool: True if changed, False otherwise.
-
-    """
-    return all((parameter.altered, not parameter.hasBeenValidated))
+# ##TODO: Put objects specific to tool(s) only in this toolbox here.
 
 
-##TODO: Implement/test for 'defaultEnvironmentName' (add to docstring).
-##TODO: Implement/test for 'parameterDependencies' (add to docstring).
-##TODO: Implement/test for 'filters' (add to docstring).
-##TODO: Implement/test for 'values' (add to docstring).
-def parameter_create(attribute_values):
+# Utility objects.
+
+##TODO: Put utils here.
+
+
+# General toolbox objects.
+
+##TODO: Add to create_parameter docstring: 'filters', 'defaultEnvironmentName', 'parameterDependencies'.
+def create_parameter(attribute_values):
     """Create ArcPy parameter object using an attribute mapping.
 
     Note that this doesn't check if the attribute exists in the default
@@ -164,14 +182,13 @@ def parameter_create(attribute_values):
     Args:
         attribute_values (dict): Mapping of attribute names to values.
             {
-                # (str): Internal reference name.
+                # (str): Internal reference name (required).
                 'name': name,
                 # (str): Label as shown in tool's dialog.
                 'displayName': displayName,
                 # (str): Direction of the parameter ('Input'/'Output').
                 'direction': direction,
-                # (str) Parameter data type.
-                # https://desktop.arcgis.com/en/arcmap/latest/analyze/creating-tools/defining-parameter-data-types-in-a-python-toolbox.htm
+                # (str) Parameter data type. See: https://desktop.arcgis.com/en/arcmap/latest/analyze/creating-tools/defining-parameter-data-types-in-a-python-toolbox.htm
                 'datatype': datatype,
                 # (str): Parameter type ('Required'/'Optional'/'Derived').
                 'parameterType': parameterType,
@@ -186,12 +203,12 @@ def parameter_create(attribute_values):
                 'symbology': symbology,
                 # (bool): Flag to set whether parameter is multi-valued.
                 'multiValue': multiValue,
-                # (object): Data value of the parameter. Object's type must
-                # be Python equivalent of parameter 'datatype'.
-                'value': value,
                 # (list of list): data types & names for value table columns.
                 # Ex:  [['GPFeatureLayer', 'Features'], ['GPLong', 'Ranks']]
                 'columns': columns,
+                # (object): Data value of the parameter. Object's type must
+                # be Python equivalent of parameter 'datatype'.
+                'value': value,
                 # (str): Type of filter.
                 'filter.type': filter_type,
                 # (list): Collection of possible values.
@@ -202,8 +219,7 @@ def parameter_create(attribute_values):
         arcpy.Parameter: Parameter derived from the attributes.
 
     """
-    default = {'name': unique_name(), 'displayName': None,
-               'direction': 'Input', 'datatype': 'GPVariant',
+    default = {'displayName': None, 'direction': 'Input', 'datatype': 'GPVariant',
                'parameterType': 'Optional', 'enabled': True, 'category': None,
                'symbology': None, 'multiValue': False, 'value': None}
     parameter = arcpy.Parameter()
@@ -226,6 +242,19 @@ def parameter_create(attribute_values):
     return parameter
 
 
+def parameter_changed(parameter):
+    """Check whether parameter is in a pre-validation changed state.
+
+    Args:
+        arcpy.Parameter: Parameter to check.
+
+    Returns:
+        bool: True if changed, False otherwise.
+
+    """
+    return all((parameter.altered, not parameter.hasBeenValidated))
+
+
 def parameter_value(parameter):
     """Get current parameter value.
 
@@ -245,19 +274,13 @@ def parameter_value(parameter):
         elif parameter.datatype == 'Value Table':
             value = []
             for row in parameter.values:
-                subval = tuple(
-                    val if type(val).__name__ != 'geoprocessing value object'
-                    else parameter_value(val)
-                    for val in row
-                    )
+                subval = tuple(val if type(val).__name__ != 'geoprocessing value object'
+                               else parameter_value(val) for val in row)
                 value.append(subval)
             value = tuple(value)
         else:
-            value = tuple(
-                val if type(val).__name__ != 'geoprocessing value object'
-                else parameter_value(val)
-                for val in parameter.values
-                )
+            value = tuple(val if type(val).__name__ != 'geoprocessing value object'
+                          else parameter_value(val) for val in parameter.values)
     else:
         if parameter.value is None:
             value = None
@@ -269,7 +292,7 @@ def parameter_value(parameter):
 
 
 def parameter_value_map(parameters):
-    """Create value map from parameters.
+    """Create value map from parameter.
 
     Args:
         parameters (list of arcpy.Parameter): Tool parameters.
@@ -278,83 +301,4 @@ def parameter_value_map(parameters):
         dict: {parameter-name: parameter-value}
 
     """
-    return {parameter.name: parameter_value(parameter)
-            for parameter in parameters}
-
-
-# Generic functions.
-
-def unique_dataset_path(prefix='', suffix='', unique_length=4,
-                        workspace_path='in_memory'):
-    """Create unique temporary dataset path.
-
-    Args:
-        prefix (str): String to insert before the unique part of the name.
-        suffix (str): String to append after the unique part of the name.
-        unique_length (int): Number of unique characters to generate.
-        workspace_path (str): Path of workspace to create the dataset in.
-
-    Returns:
-        str: Path of the created dataset.
-
-    """
-    name = unique_name(prefix, suffix, unique_length,
-                       allow_initial_digit=False)
-    return os.path.join(workspace_path, name)
-
-
-def unique_ids(data_type=uuid.UUID, string_length=4):
-    """Generator for unique IDs.
-
-    Args:
-        data_type: Type object to create unique IDs as.
-        string_length (int): Length to make unique IDs of type string.
-            Ignored if data_type is not a stringtype.
-
-    Yields:
-        Unique ID.
-
-    """
-    if data_type in (float, int):
-        # Skip 0 (problematic - some processing functions use 0 for null).
-        unique_id = data_type(1)
-        while True:
-            yield unique_id
-            unique_id += 1
-    elif data_type in (uuid.UUID,):
-        while True:
-            yield uuid.uuid4()
-    elif data_type in (str,):
-        seed = string.ascii_letters + string.digits
-        used_ids = set()
-        while True:
-            unique_id = ''.join(random.choice(seed)
-                                for _ in range(string_length))
-            if unique_id in used_ids:
-                continue
-            yield unique_id
-    else:
-        raise NotImplementedError(
-            "Unique IDs for {} type not implemented.".format(data_type)
-            )
-
-
-def unique_name(prefix='', suffix='', unique_length=4,
-                allow_initial_digit=True):
-    """Generate unique name.
-
-    Args:
-        prefix (str): String to insert before the unique part of the name.
-        suffix (str): String to append after the unique part of the name.
-        unique_length (int): Number of unique characters to generate.
-        allow_initial_number (bool): Flag indicating whether to let the
-            initial character be a number. Defaults to True.
-
-    Returns:
-        str: Unique name.
-
-    """
-    name = prefix + next(unique_ids(str, unique_length)) + suffix
-    if not allow_initial_digit and name[0].isdigit():
-        name = unique_name(prefix, suffix, unique_length, allow_initial_digit)
-    return name
+    return {parameter.name: parameter_value(parameter) for parameter in parameters}
