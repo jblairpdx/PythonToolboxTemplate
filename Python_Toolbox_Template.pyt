@@ -160,7 +160,7 @@ class ToolExample(object):
 
 # Tool-specific objects.
 
-# ##TODO: Put objects specific to tool(s) only in this toolbox here.
+##TODO: Put objects specific to tool(s) only in this toolbox here.
 
 
 # Utility objects.
