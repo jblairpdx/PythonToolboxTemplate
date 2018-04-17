@@ -149,6 +149,7 @@ class ToolExample(object):
         value = parameter_value_map(parameters)
         if value.get('save_config_file_on_run'):
             update_config(META['config_path'], self.__class__.__name__, parameters)
+        # Uncomment loop to have info about parameter values in messages.
         # for param in parameters:
         #     messages.AddWarningMessage(param.name + " - " + param.datatype)
         #     messages.AddWarningMessage(value[param.name])
@@ -160,9 +161,14 @@ class ToolExample(object):
 ##TODO: Put objects specific to tool(s) only in this toolbox here.
 
 
+# Geoprocessing objects.
+
+##TODO: Put geoprocessing objects here.
+
+
 # Utility objects.
 
-##TODO: Put utils here.
+##TODO: Put utility objects here.
 
 
 # General toolbox objects.
