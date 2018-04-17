@@ -72,24 +72,21 @@ class ToolExample(object):
 
         """
         parameters = [
-            create_parameter(
-                {'name': 'example_parameter',
-                 'displayName': "Example Parameter (see create_parameter docstring)",
-                 'datatype': 'GPVariant',
-                 'value': 'EXAMPLE VALUE',},
-            ),
-            create_parameter(
-                {'name': 'overwrite',
-                 'displayName': 'Overwrite Output',
-                 'datatype': 'GPBoolean',
-                 'category': 'Settings', 'value': False}
-            ),
-            # create_parameter(
-            #     {'name': 'save_config_file_on_run',
-            #      'displayName': 'Save to Configuration File on Run',
-            #      'datatype': 'GPBoolean',
-            #      'category': 'Settings', 'value': False}
-            # ),
+            ##TODO: See create_parameter docs for info about args.
+            create_parameter(name='example_parameter',
+                             displayName='Example Parameter',
+                             datatype='GPVariant',
+                             value='EXAMPLE VALUE'),
+            create_parameter(name='overwrite',
+                             displayName='Overwrite Output',
+                             datatype='GPBoolean',
+                             category='Settings',
+                             value=False),
+            create_parameter(name='save_config_file_on_run',
+                             displayName='Save to Configuration File on Run',
+                             datatype='GPBoolean',
+                             category='Settings',
+                             value=False),
         ]
         # Apply config values.
         config = load_config(META['config_path'], self.__class__.__name__)
