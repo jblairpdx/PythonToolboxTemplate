@@ -465,14 +465,8 @@ def dataset_metadata(dataset_path):
     return meta
 
 
-def features_delete(dataset_path, **kwargs):
+def delete_features(dataset_path, **kwargs):
     """Delete features in the dataset.
-
-    Requires:
-        DatasetView
-        Editor
-        dataset_feature_count
-        dataset_metadata
 
     Args:
         dataset_path (str): Path of the dataset.
