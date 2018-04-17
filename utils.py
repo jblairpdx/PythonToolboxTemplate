@@ -10,53 +10,20 @@ if sys.version_info.major <= 3:
     basestring = str
 
 
-##TODO: Create ConfigManager class, with load_config & update_config as methods.
-##TODO: Prettyprint json for config output.
-##TODO: OrderedDict for config manager internal.
-##TODO: Wrap exception for bad json in load?
-##TODO: Decorator method for applying config values in getParameterInfo?
-##TODO: Decorator method for adding self.config to tool on init?
-def load_config(config_path):
-    """Load configuration from file.
 
     Args:
-        config_path (str): Path for the config file.
 
-    Returns:
-        dict: Configuration settings if file exists; otherwise empty dictionary.
 
     """
-    import json
-    if os.path.exists(config_path):
-        with open(config_path) as _file:
-            config = json.load(_file)
     else:
-        config = {}
-    return config
 
 
-def update_config(tool_name, parameters, config_path=None):
-    """Updates tool configuration data in toolbox configuration file.
 
     Args:
-        tool_name (object): Instance of the tool class.
-        config_path (str): Path for the config file. If config_path is None, no file
-            will be updated.
 
     Returns:
-        dict: Updated copy of configuration settings.
 
     """
-    import json
-    _config = load_config(config_path) if config_path else {}
-    old_config = _config.get(tool_name, {})
-    new_config = {param.name: param.valueAsText for param in parameters}
-    if old_config != new_config:
-        _config[tool_name] = new_config
-        if config_path:
-            with open(config_path, 'w') as _file:
-                json.dump(_config, _file)
-    return new_config
 
 
 def leveled_logger(logger, level_repr=None):
