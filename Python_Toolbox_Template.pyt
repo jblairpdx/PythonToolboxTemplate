@@ -20,6 +20,11 @@ LOG = logging.getLogger(__name__)
 
 # _CONFIG_PATH = __file__[:-4] + '.config.json'
 # """str: Path for toolbox configuration file."""
+META = {
+    'label': os.path.splitext(os.path.basename(__file__))[0].replace('_', ' '),
+    'config_path': os.path.splitext(__file__)[0] + '.config.json',
+}
+"""dict: Toolbox metadata."""
 
 
 class Toolbox(object):
@@ -35,7 +40,7 @@ class Toolbox(object):
 
     def __init__(self):
         """Initialize instance."""
-        self.label = "##TODO: Toolbox label."
+        self.label = META['label']
         """str: Label for the toolbox. Only shows up in toolbox properties."""
         self.alias = '##TODO: Toolbox alias.'
         """str: toolbox namespace when attached to ArcPy."""
