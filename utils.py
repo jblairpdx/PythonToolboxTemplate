@@ -10,11 +10,27 @@ if sys.version_info.major <= 3:
     basestring = str
 
 
+def clean_whitespace(value, clear_empty_string=True):
+    """Return value with whitespace stripped & deduplicated.
 
     Args:
+        value (str): Value to clean.
+        clear_empty_string (bool): Convert empty string results to NoneTypes if True.
 
+    Returns
+        str, NoneType: Cleaned value.
 
     """
+    if value is not None:
+        value = value.strip()
+        for character in string.whitespace:
+            while character*2 in value:
+                value = value.replace(character*2, character)
+    if clear_empty_string and not value:
+        value = None
+    return value
+
+
     else:
 
 
