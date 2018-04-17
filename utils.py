@@ -1,6 +1,8 @@
 """Mostly self-contained functions for geoprocessing in Python toolboxes."""
+from collections import Iterable
 import inspect
 import logging
+import math
 import os
 import random
 import string
@@ -83,11 +85,44 @@ def describe_attribute_change(attribute_key, new_attribute_value, **kwargs):
     return desc
 
 
+def get_bearing(coord0, coord1):
+    """Find directional bearing or angle of input coordinates.
+
     Args:
+        coord0 (iter): Two-part iterable of an X- & Y-value for the first point.
+        coord0 (iter): Two-part iterable of an X- & Y-value for the second point.
 
     Returns:
+        float: Directional bearing for the coordinates.
 
     """
+    if coord0 == coord1:
+        raise ValueError("Coordinates are the same point.")
+    x_0, y_0 = coord0
+    x_1, y_1 = coord1
+    run = x_1 - x_0
+    rise = y_1 - y_0
+    try:
+        theta_angle = math.degrees(math.atan(abs(run / rise)))
+    except ZeroDivisionError:
+        theta_angle = None
+    if theta_angle is None:
+        # Bearing is either 90 or 270 (cannot divide by zero for equation).
+        bearing = 90 if run > 0 else 270
+    else:
+        # Top-right quadrant (0-89.x).
+        if run >= 0 and rise > 0:
+            bearing = theta_angle
+        # Lower-right quadrant (90.x-180).
+        if run >= 0 and rise < 0:
+            bearing = 180 - theta_angle
+        # Lower-left quadrant (180-269.x). Don't care about 180 overlap.
+        if run <= 0 and rise < 0:
+            bearing = 180 + theta_angle
+        # Top-left quadrant (270.x-359.x). Do care about 360 overlap 0.
+        if run < 0 and rise > 0:
+            bearing = 360 - theta_angle
+    return bearing
 
 
 def leveled_logger(logger, level_repr=None):
