@@ -12,9 +12,11 @@ import arcpy
 
 if sys.version_info.major >= 3:
     basestring = str
+    """Defining a basestring type instance for Py3+."""
 
 
 LOG = logging.getLogger(__name__)
+"""logging.Logger: Toolbox-level logger."""
 META = {
     'label': os.path.splitext(os.path.basename(__file__))[0].replace('_', ' '),
     'config_path': os.path.splitext(__file__)[0] + '.config.json',
