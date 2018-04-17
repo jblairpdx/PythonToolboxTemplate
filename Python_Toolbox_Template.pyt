@@ -208,7 +208,7 @@ def update_config(config_path, tool_name, parameters):
 
 
 ##TODO: Add to create_parameter docstring: 'filters', 'defaultEnvironmentName', 'parameterDependencies'.
-def create_parameter(attribute_values):
+def create_parameter(name, **kwargs):
     """Create ArcPy parameter object using an attribute mapping.
 
     Note that this doesn't check if the attribute exists in the default
@@ -217,65 +217,56 @@ def create_parameter(attribute_values):
     (usually this will just attach the new attribute).
 
     Args:
-        attribute_values (dict): Mapping of attribute names to values.
-            {
-                # (str): Internal reference name (required).
-                'name': name,
-                # (str): Label as shown in tool's dialog.
-                'displayName': displayName,
-                # (str): Direction of the parameter ('Input'/'Output').
-                'direction': direction,
-                # (str) Parameter data type. See: https://desktop.arcgis.com/en/arcmap/latest/analyze/creating-tools/defining-parameter-data-types-in-a-python-toolbox.htm
-                'datatype': datatype,
-                # (str): Parameter type ('Required'/'Optional'/'Derived').
-                'parameterType': parameterType,
-                # (bool): Flag to set parameter as enabled or disabled.
-                'enabled': enabled,
-                # (str, NoneType): Category to include parameter in.
-                # Naming category will hide tool in collapsed category on
-                # open. Set to None for tool to be at top-level.
-                'category': category,
-                # (str, NoneType): Path to layer file used for drawing output.
-                # Set to None to omit symbology.
-                'symbology': symbology,
-                # (bool): Flag to set whether parameter is multi-valued.
-                'multiValue': multiValue,
-                # (list of list): data types & names for value table columns.
-                # Ex:  [['GPFeatureLayer', 'Features'], ['GPLong', 'Ranks']]
-                'columns': columns,
-                # (object): Data value of the parameter. Object's type must
-                # be Python equivalent of parameter 'datatype'.
-                'value': value,
-                # (str): Type of filter.
-                'filter.type': filter_type,
-                # (list): Collection of possible values.
-                'filter.list': filter_list,
-            }
+        name (str): Internal reference name for parameter (required).
+
+    Keyword Args:
+        displayName (str): Label as shown in tool's dialog. Default is parameter name.
+        direction (str): Direction of the parameter: Input or Output. Default is Input.
+        datatype (str): Parameter data type. Default is GPVariant. See
+            https://desktop.arcgis.com/en/arcmap/latest/analyze/creating-tools/defining-parameter-data-types-in-a-python-toolbox.htm
+        parameterType (str): Parameter type: Optional, Required, or Derived. Default is
+            Optional.
+        enabled (bool): Flag to set parameter as enabled or disabled. Default is True.
+        category (str, NoneType): Category to include parameter in. Naming a category
+            will hide tool in collapsed category on open. Set to None (the default) for
+            tool to be at top-level.
+        symbology (str, NoneType): Path to layer file used for drawing output. Set to
+            None (the default) to omit symbology.
+        multiValue (bool): Flag to set whether parameter is multi-valued. Default is
+            False.
+        value (object): Data value of the parameter. Object's type must be the Python
+            equivalent of parameter 'datatype'. Default is None.
+        columns (list of list): Ordered collection of data type/name pairs for value
+            table columns. Ex: `[['GPFeatureLayer', 'Features'], ['GPLong', 'Ranks']]`
+        filter_type (str): Type of filter to apply: ValueList, Range, FeatureClass,
+            File, Field, or Workspace.
+        filter_list (list): Collection of possible values allowed by the filter type.
+            Default is an empty list.
 
     Returns:
         arcpy.Parameter: Parameter derived from the attributes.
 
     """
-    default = {'displayName': None, 'direction': 'Input', 'datatype': 'GPVariant',
-               'parameterType': 'Optional', 'enabled': True, 'category': None,
-               'symbology': None, 'multiValue': False, 'value': None}
-    parameter = arcpy.Parameter()
-    for attr, value in attribute_values.items():
-        # Apply filter later.
-        if attr.startswith('filter.'):
+    kwargs.setdefault('displayName', name)
+    kwargs.setdefault('direction', 'Input')
+    kwargs.setdefault('datatype', 'GPVariant')
+    kwargs.setdefault('parameterType', 'Optional')
+    kwargs.setdefault('enabled', True)
+    kwargs.setdefault('category')
+    kwargs.setdefault('symbology')
+    kwargs.setdefault('multiValue', False)
+    kwargs.setdefault('value')
+    kwargs.setdefault('filter_list', [])
+    parameter = arcpy.Parameter(name)
+    for attr, value in kwargs.items():
+        # Apply filter properties later.
+        if attr.startswith('filter_'):
             continue
         else:
             setattr(parameter, attr, value)
-    # Set defaults for initial attributes not in attribute_values.
-    for attr, value in default.items():
-        if attr in attribute_values:
-            continue
-        setattr(parameter, attr, value)
-    # Filter attributes don't stick using setattr.
-    if 'filter.type' in attribute_values:
-        parameter.filter.type = attribute_values['filter.type']
-    if 'filter.list' in attribute_values:
-        parameter.filter.list = attribute_values['filter.list']
+    for key in ('filter_type', 'filter_list'):
+        if key in kwargs:
+            setattr(parameter.filter, key.replace('filter_', ''), kwargs[key])
     return parameter
 
 
