@@ -3,6 +3,7 @@
 Here is where you should explain the contents/purpose of the toolbox.
 
 """
+import json
 import logging
 import os
 import random
@@ -17,9 +18,6 @@ if sys.version_info.major >= 3:
 
 
 LOG = logging.getLogger(__name__)
-
-# _CONFIG_PATH = __file__[:-4] + '.config.json'
-# """str: Path for toolbox configuration file."""
 META = {
     'label': os.path.splitext(os.path.basename(__file__))[0].replace('_', ' '),
     'config_path': os.path.splitext(__file__)[0] + '.config.json',
@@ -63,8 +61,6 @@ class ToolExample(object):
         """str: Longer text describing tool, shown in side panel."""
         self.canRunInBackground = False
         """bool: Flag for whether tool controls ArcGIS focus while running."""
-        # self.config = load_config(_CONFIG_PATH).get(self.__class__.__name__, dict())
-        # """dict: Tool configuration settings."""
 
     def getParameterInfo(self):
         """Load parameters into toolbox.
@@ -96,10 +92,12 @@ class ToolExample(object):
             #      'category': 'Settings', 'value': False}
             # ),
         ]
-        # # Apply config values.
-        # for parameter in parameters:
-        #     if parameter.name not in {'save_config_file'}:
-        #         parameter.value = self.config.get(parameter.name, parameter.value)
+        # Apply config values.
+        config = load_config(META['config_path'], self.__class__.__name__)
+        if config:
+            for parameter in parameters:
+                if parameter.name not in {'save_config_file'}:
+                    parameter.value = config.get(parameter.name, parameter.value)
         return parameters
 
     def isLicensed(self):
@@ -153,10 +151,8 @@ class ToolExample(object):
         """
         ##TODO: Use value to access parameter values by name (can also add values).
         value = parameter_value_map(parameters)
-        # if value['save_config_file_on_run']:
-        #     self.config = update_config(self.__class__.__name__, parameters,
-        #                                 _CONFIG_PATH)
-        # Uncomment for-loop to have info about parameter values in messages.
+        if value.get('save_config_file_on_run'):
+            update_config(META['config_path'], self.__class__.__name__, parameters)
         # for param in parameters:
         #     messages.AddWarningMessage(param.name + " - " + param.datatype)
         #     messages.AddWarningMessage(value[param.name])
@@ -174,6 +170,46 @@ class ToolExample(object):
 
 
 # General toolbox objects.
+
+def load_config(config_path, tool_name=None):
+    """Load configuration from toolbox configuration file.
+
+    Args:
+        config_path (str): Path for the config file.
+        tool_name (str): Name of the tool class. If None, will load entire contents of
+            config file.
+
+    Returns:
+        dict: Configuration settings if file exists; otherwise empty dictionary.
+
+    """
+    if os.path.exists(config_path):
+        with open(config_path) as _file:
+            all_config = json.load(_file)
+            config = all_config.get(tool_name, {}) if tool_name else all_config
+    else:
+        config = {}
+    return config
+
+
+def update_config(config_path, tool_name, parameters):
+    """Updates tool configuration data in toolbox configuration file.
+
+    Args:
+        config_path (str): Path for the config file.
+        tool_name (str): Name of the tool class.
+        parameters (iter of arcpy.Parameter): Collection of parameter objects to save
+            values of in the config file.
+
+    """
+    all_config = load_config(config_path)
+    old_config = all_config.get(tool_name, {})
+    new_config = {param.name: param.valueAsText for param in parameters}
+    if old_config != new_config:
+        all_config[tool_name] = new_config
+        with open(config_path, 'w') as config_file:
+            json.dump(all_config, config_file)
+
 
 ##TODO: Add to create_parameter docstring: 'filters', 'defaultEnvironmentName', 'parameterDependencies'.
 def create_parameter(attribute_values):
