@@ -55,7 +55,32 @@ def contain(obj, nonetypes_as_empty=True):
         yield obj
 
 
+def describe_attribute_change(attribute_key, new_attribute_value, **kwargs):
+    """Return description of an attribute change (useful for logging).
 
+    Args:
+        attribute_key (str): Name of the attribute.
+        new_attribute_value: New value of the attribute.
+        **kwargs: Arbitrary keyword arguments. See below.
+
+    Keyword Args:
+        feature_id_key (str): Name of the feature ID attribute.
+        feature_id_value: Value of the feature ID.
+        old_attribute_value: Old value of the attribute.
+
+    Returns:
+        str: Change description.
+
+    """
+    desc = "Changed {}=".format(attribute_key)
+    if 'old_attribute_value' in kwargs:
+        desc += "{old_attribute_value!r} --> ".format(**kwargs)
+    desc += "{!r}".format(new_attribute_value)
+    if 'feature_id_key' in kwargs:
+        kwargs.setdefault('feature_id_value')
+        desc += " for {feature_id_key}={feature_id_value!r}".format(**kwargs)
+    desc += "."
+    return desc
 
 
     Args:
