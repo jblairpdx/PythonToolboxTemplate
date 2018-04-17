@@ -1,4 +1,5 @@
 """Mostly self-contained functions for geoprocessing in Python toolboxes."""
+import inspect
 import logging
 import os
 import random
@@ -31,7 +32,29 @@ def clean_whitespace(value, clear_empty_string=True):
     return value
 
 
+def contain(obj, nonetypes_as_empty=True):
+    """Generate contained items if a collection, otherwise generate object.
+
+    Args:
+        obj: Any object, collection or otherwise.
+        nontypes_as_empty (bool): True if NoneTypes treated as an empty
+            collection, otherwise False.
+
+    Yields:
+        obj or its contents.
+
+    """
+    if nonetypes_as_empty and obj is None:
+        return
+    if inspect.isgeneratorfunction(obj):
+        obj = obj()
+    if isinstance(obj, Iterable) and not isinstance(obj, basestring):
+        for i in obj:
+            yield i
     else:
+        yield obj
+
+
 
 
 
