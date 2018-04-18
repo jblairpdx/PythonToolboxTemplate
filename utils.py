@@ -165,6 +165,28 @@ def log_level(level_repr=None):
     return result
 
 
+def pairwise(iterable):
+    """Generate overlapping ordered pairs from an iterable.
+
+    i -> (i[0], i[1]), (i[1], i[2]), (i[2], i[3]), ...
+
+    Args:
+        iterable (iter): Iterable to walk.
+
+    Yields:
+        tuple: Pair from iterable.
+
+    """
+    pair = {}
+    for x in iterable:
+        if 0 not in pair:
+            pair[0] = x
+            continue
+        pair[1] = x
+        yield (pair[0], pair[1])
+        pair[0] = pair[1]
+
+
 def unique_ids(data_type=uuid.UUID, string_length=4):
     """Generator for unique IDs.
 
