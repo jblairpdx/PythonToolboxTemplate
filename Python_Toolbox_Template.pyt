@@ -213,7 +213,6 @@ def update_config(config_path, tool_name, parameters):
             json.dump(all_config, config_file)
 
 
-##TODO: Add to create_parameter docstring: 'filters', 'defaultEnvironmentName', 'parameterDependencies'.
 def create_parameter(name, **kwargs):
     """Create ArcPy parameter object using an attribute mapping.
 
@@ -248,6 +247,8 @@ def create_parameter(name, **kwargs):
             File, Field, or Workspace.
         filter_list (list): Collection of possible values allowed by the filter type.
             Default is an empty list.
+        parameterDependencies (list): Collection other parameter's names that this
+            parameter's value depends upon.
 
     Returns:
         arcpy.Parameter: Parameter derived from the attributes.
@@ -263,6 +264,7 @@ def create_parameter(name, **kwargs):
     kwargs.setdefault('multiValue', False)
     kwargs.setdefault('value')
     kwargs.setdefault('filter_list', [])
+    kwargs.setdefault('parameterDependencies', [])
     parameter = arcpy.Parameter(name)
     for attr, value in kwargs.items():
         # Apply filter properties later.
