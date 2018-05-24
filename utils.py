@@ -192,34 +192,39 @@ def unique_ids(data_type=uuid.UUID, string_length=4):
 
     Args:
         data_type: Type object to create unique IDs as.
-        string_length (int): Length to make unique IDs of type string.
-            Ignored if data_type is not a stringtype.
+        string_length (int): Length to make unique IDs of type string. Ignored if
+            data_type is not a string type.
 
     Yields:
         Unique ID.
 
     """
-    if data_type in (float, int):
+    if data_type in [float, int]:
         # Skip 0 (problematic - some processing functions use 0 for null).
         unique_id = data_type(1)
         while True:
             yield unique_id
+
             unique_id += 1
-    elif data_type in (uuid.UUID,):
+    elif data_type in [uuid.UUID]:
         while True:
             yield uuid.uuid4()
-    elif data_type in (str,):
+
+    elif data_type in [str]:
         seed = string.ascii_letters + string.digits
         used_ids = set()
         while True:
             unique_id = ''.join(random.choice(seed) for _ in range(string_length))
             if unique_id in used_ids:
                 continue
+
             yield unique_id
+
+            used_ids.add(unique_id)
     else:
         raise NotImplementedError(
             "Unique IDs for {} type not implemented.".format(data_type)
-            )
+        )
 
 
 def unique_name(prefix='', suffix='', unique_length=4, allow_initial_digit=True):
@@ -229,8 +234,8 @@ def unique_name(prefix='', suffix='', unique_length=4, allow_initial_digit=True)
         prefix (str): String to insert before the unique part of the name.
         suffix (str): String to append after the unique part of the name.
         unique_length (int): Number of unique characters to generate.
-        allow_initial_number (bool): Flag indicating whether to let the
-            initial character be a number. Defaults to True.
+        allow_initial_number (bool): Flag indicating whether to let the initial
+            character be a number. Default is True.
 
     Returns:
         str: Unique name.
