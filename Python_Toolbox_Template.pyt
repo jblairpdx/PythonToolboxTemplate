@@ -263,8 +263,8 @@ def create_parameter(name, **kwargs):
     kwargs.setdefault('symbology')
     kwargs.setdefault('multiValue', False)
     kwargs.setdefault('value')
-    kwargs.setdefault('filter_list', [])
-    kwargs.setdefault('parameterDependencies', [])
+    # DO NOT SET DEFAULT: kwargs.setdefault('filter_list', [])
+    # DO NOT SET DEFAULT: kwargs.setdefault('parameterDependencies', [])
     parameter = arcpy.Parameter(name)
     for attr, value in kwargs.items():
         # Apply filter properties later.
@@ -272,7 +272,7 @@ def create_parameter(name, **kwargs):
             continue
         else:
             setattr(parameter, attr, value)
-    for key in ('filter_type', 'filter_list'):
+    for key in ['filter_type', 'filter_list']:
         if key in kwargs:
             setattr(parameter.filter, key.replace('filter_', ''), kwargs[key])
     return parameter
