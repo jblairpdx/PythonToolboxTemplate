@@ -1,7 +1,6 @@
 """##TODO: Docstring.
 
 Here is where you should explain the contents/purpose of the toolbox.
-
 """
 import json
 import logging
@@ -32,7 +31,6 @@ class Toolbox(object):
 
     Use arcpy.ImportToolbox to attach the toolbox. After attaching,
     reference the tools like `arcpy.{toolbox-alias}.{tool-class-name}`
-
     """
 
     def __init__(self):
@@ -69,7 +67,6 @@ class ToolExample(object):
 
         Returns:
             list of arcpy.Parameter: Tool parameters.
-
         """
         parameters = [
             ##TODO: See create_parameter docs for info about args.
@@ -103,7 +100,6 @@ class ToolExample(object):
 
         Returns:
             bool: True if licensed, False otherwise.
-
         """
         return True
 
@@ -114,7 +110,6 @@ class ToolExample(object):
 
         Args:
             parameters (list of arcpy.Parameter): Tool parameters.
-
         """
         parameter = {param.name: param for param in parameters}
         ##TODO: See if example_parameter's message needs updating.
@@ -128,7 +123,6 @@ class ToolExample(object):
 
         Args:
             parameters (list of arcpy.Parameter): Tool parameters.
-
         """
         parameter = {param.name: param for param in parameters}
         if parameter_changed(parameter['overwrite']):
@@ -143,7 +137,6 @@ class ToolExample(object):
         Args:
             parameters (list of arcpy.Parameter): Tool parameters.
             messages (geoprocessing messages object): Tool messages.
-
         """
         ##TODO: Use value to access parameter values by name (can also add values).
         value = parameter_value_map(parameters)
@@ -183,7 +176,6 @@ def load_config(config_path, tool_name=None):
 
     Returns:
         dict: Configuration settings if file exists; otherwise empty dictionary.
-
     """
     if os.path.exists(config_path):
         with open(config_path) as _file:
@@ -202,7 +194,6 @@ def update_config(config_path, tool_name, parameters):
         tool_name (str): Name of the tool class.
         parameters (iter of arcpy.Parameter): Collection of parameter objects to save
             values of in the config file.
-
     """
     all_config = load_config(config_path)
     old_config = all_config.get(tool_name, {})
@@ -252,7 +243,6 @@ def create_parameter(name, **kwargs):
 
     Returns:
         arcpy.Parameter: Parameter derived from the attributes.
-
     """
     kwargs.setdefault('displayName', name)
     kwargs.setdefault('direction', 'Input')
@@ -286,7 +276,6 @@ def parameter_changed(parameter):
 
     Returns:
         bool: True if changed, False otherwise.
-
     """
     return all((parameter.altered, not parameter.hasBeenValidated))
 
@@ -302,7 +291,6 @@ def parameter_value(parameter):
 
     Returns:
         Current parameter value.
-
     """
     if hasattr(parameter, 'values'):
         if parameter.values is None:
@@ -335,6 +323,5 @@ def parameter_value_map(parameters):
 
     Returns:
         dict: {parameter-name: parameter-value}
-
     """
     return {parameter.name: parameter_value(parameter) for parameter in parameters}
