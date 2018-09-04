@@ -46,7 +46,7 @@ class Toolbox(object):
 
 
 class ToolExample(object):
-    """Example of an individual tool in an ArcGIS Python toolbox."""
+    """Example of an individual tool in an ArcGIS Python toolbox. ##TODO: Write."""
 
     def __init__(self):
         """Initialize instance."""
@@ -54,7 +54,7 @@ class ToolExample(object):
         """str: How tool is named within toolbox."""
         self.category = None
         """str, NoneType: Name of sub-toolset tool will be in (optional)."""
-        self.description = "##TODO: Description."
+        self.description = self.__class__.__doc__
         """str: Longer text describing tool, shown in side panel."""
         self.canRunInBackground = False
         """bool: Flag for whether tool controls ArcGIS focus while running."""
