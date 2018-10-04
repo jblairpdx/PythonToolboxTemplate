@@ -19,6 +19,9 @@ LOG = logging.getLogger(__name__)
 META = {
     'label': os.path.splitext(os.path.basename(__file__))[0].replace('_', ' '),
     'config_path': os.path.splitext(__file__)[0] + '.config.json',
+    # Add category name key with member class names list for values.
+    # e.g. `{"QA-QC": ["CleanWhitespace"]}`.
+    "category": {},
 }
 """dict: Toolbox metadata."""
 
@@ -52,7 +55,7 @@ class ToolExample(object):
         """Initialize instance."""
         self.label = "##TODO: Label."
         """str: How tool is named within toolbox."""
-        self.category = None
+        self.category = META.get("category", {}).get(self.__class__.__name__)
         """str, NoneType: Name of sub-toolset tool will be in (optional)."""
         self.description = self.__class__.__doc__
         """str: Longer text describing tool, shown in side panel."""
