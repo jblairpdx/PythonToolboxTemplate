@@ -20,7 +20,7 @@ META = {
     'label': os.path.splitext(os.path.basename(__file__))[0].replace('_', ' '),
     'config_path': os.path.splitext(__file__)[0] + '.config.json',
     # Add category name key with member class names list for values.
-    # e.g. `{"QA-QC": ["CleanWhitespace"]}`.
+    # e.g. `{"CleanTool": "QA-QC Category"}`.
     "category": {},
 }
 """dict: Toolbox metadata."""
