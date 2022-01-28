@@ -222,7 +222,7 @@ def create_parameter(name, **kwargs):
         displayName (str): Label as shown in tool's dialog. Default is parameter name.
         direction (str): Direction of the parameter: Input or Output. Default is Input.
         datatype (str): Parameter data type. Default is GPVariant. See
-            https://desktop.arcgis.com/en/arcmap/latest/analyze/creating-tools/defining-parameter-data-types-in-a-python-toolbox.htm
+            https://pro.arcgis.com/en/pro-app/latest/arcpy/geoprocessing_and_python/defining-parameter-data-types-in-a-python-toolbox.htm
         parameterType (str): Parameter type: Optional, Required, or Derived. Default is
             Optional.
         enabled (bool): Flag to set parameter as enabled or disabled. Default is True.
